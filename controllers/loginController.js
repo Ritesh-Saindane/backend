@@ -1,3 +1,4 @@
+const BlackList = require("../models/blacklistToken");
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
 
@@ -58,4 +59,23 @@ const handleGetUserProfile = async (req, res) => {
   return res.status(200).json(user);
 };
 
-module.exports = { handleSignUp, handleSignIn, handleGetUserProfile };
+const handleLogOutUser = async (req, res) => {
+  const token =
+    req.cookies?.token || req.headers.authorization.split("Bearer")[1];
+  try {
+    await BlackList.create({ token });
+    res.clearCookie("token");
+  } catch (e) {
+    return res
+      .status(401)
+      .json({ error: `error during logout :: ${e.message} ` });
+  }
+
+  return res.status(200).json({ msg: "success" });
+};
+module.exports = {
+  handleSignUp,
+  handleSignIn,
+  handleGetUserProfile,
+  handleLogOutUser,
+};

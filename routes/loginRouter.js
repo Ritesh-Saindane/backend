@@ -3,6 +3,7 @@ const {
   handleSignUp,
   handleSignIn,
   handleGetUserProfile,
+  handleLogOutUser,
 } = require("../controllers/loginController");
 const upload = require("../services/utilities");
 const { validateSignUp, validateSignIn } = require("../utilities/validation");
@@ -22,5 +23,7 @@ router.post(
 router.post("/login", validateSignIn, handleSignIn);
 
 router.get("/my-profile", authUser, handleGetUserProfile);
+
+router.get("/logout", authUser, handleLogOutUser);
 
 module.exports = router;
