@@ -1,6 +1,7 @@
 const express = require("express");
 const { handleSignUp } = require("../controllers/loginController");
 const upload = require("../services/utilities");
+const { validateSignUp } = require("../utilities/validation");
 
 const router = express.Router();
 
@@ -10,6 +11,7 @@ router.post(
     { name: "profileImageUrl", maxCount: 1 },
     { name: "idImageUrl", maxCount: 1 },
   ]),
+  validateSignUp,
   handleSignUp
 );
 

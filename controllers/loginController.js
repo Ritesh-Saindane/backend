@@ -1,6 +1,13 @@
 const User = require("../models/user");
+const { validationResult } = require("express-validator");
 
 const handleSignUp = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const { fullName, email, password, mobileNo, gender } = req.body;
 
