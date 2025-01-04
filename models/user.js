@@ -50,20 +50,17 @@ const userSchema = new Schema(
     salt: {
       type: String,
     },
-    profileImageUrl: {
-      type: String,
-      default: "/images/defaultUser.png",
-    },
   },
   { timestamps: true }
 );
 
+// Hash the password before saving
 userSchema.pre("save", function (next) {
   const user = this;
 
-  if (!user.isModified("password")) return;
+  if (!user.isModified("password")) return next();
 
-  const salt = randomBytes(16).toString();
+  const salt = randomBytes(16).toString("hex");
 
   const hashedPassword = createHmac("sha256", salt)
     .update(user.password)
@@ -74,19 +71,32 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-// when user first time registers :
-userSchema.static("addUserAndGenerateToken", async function (dataFromUser) {
-  let { fullName, email, password, mobileNo, gender } = dataFromUser.body;
-  console.log("req.data", dataFromUser.files);
+// for adding a user and generating a token
+userSchema.static("addUserAndGenerateToken", async function (data) {
+  const {
+    fullName,
+    email,
+    password,
+    mobileNo,
+    gender,
+    profileImagePath,
+    idImagePath,
+  } = data;
   try {
+    // Create a new user
     const newUser = await this.create({
       fullName,
       email,
       password,
       mobileNo,
       gender,
+      docs: {
+        profileImageUrl: profileImagePath || "/images/defaultUser.png",
+        idImageUrl: idImagePath,
+      },
     });
 
+    // Generate token
     const token = createToken(newUser);
     return token;
   } catch (e) {
@@ -94,23 +104,19 @@ userSchema.static("addUserAndGenerateToken", async function (dataFromUser) {
   }
 });
 
-// when user log in :
+// for login (checking password and generating token)
 userSchema.static(
   "checkPasswordAndGenerateToken",
   async function (email, password) {
     const user = await this.findOne({ email });
 
-    if (!user) throw new Error("Email Not found");
+    if (!user) throw new Error("Email Not Found");
 
-    const salt = user.salt;
-    const originalHashedPassword = user.password;
-
-    const userProvidedPasswordConvertedToHash = createHmac("sha256", salt)
+    const hashedPassword = createHmac("sha256", user.salt)
       .update(password)
       .digest("hex");
 
-    if (originalHashedPassword != userProvidedPasswordConvertedToHash)
-      throw new Error("Wrong Password");
+    if (hashedPassword !== user.password) throw new Error("Wrong Password");
 
     const token = createToken(user);
     return token;
