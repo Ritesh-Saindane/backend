@@ -36,4 +36,26 @@ const handleSignUp = async (req, res) => {
   }
 };
 
-module.exports = { handleSignUp };
+const handleSignIn = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  let { email, password } = req.body;
+  try {
+    const token = await User.checkPasswordAndGenerateToken(email, password);
+    // console.log(token);
+    res.cookie("token", token);
+    return res.status(200).json({ msg: "success", token: token });
+  } catch (err) {
+    return res.status(400).json({ err: err.message });
+  }
+};
+
+const handleGetUserProfile = async (req, res) => {
+  const user = req.user;
+  return res.status(200).json(user);
+};
+
+module.exports = { handleSignUp, handleSignIn, handleGetUserProfile };

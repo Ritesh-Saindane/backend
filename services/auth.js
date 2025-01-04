@@ -10,13 +10,16 @@ function createToken(entity) {
     email: entity.email,
     mobileNo: entity.mobileNo,
     gender: entity.gender,
-    profileImageUrl: entity.profileImageUrl,
+    profileImageUrl: entity.docs.profileImageUrl,
     rating: entity.rating,
   };
 
   const token = jwt.sign(payload, secret);
-
   return token;
 }
 
-module.exports = { createToken };
+function getUserFromToken(token) {
+  return jwt.verify(token, secret);
+}
+
+module.exports = { createToken, getUserFromToken };

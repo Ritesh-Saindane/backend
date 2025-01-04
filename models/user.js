@@ -118,6 +118,7 @@ userSchema.static(
 
     if (hashedPassword !== user.password) throw new Error("Wrong Password");
 
+    // console.log(user);
     const token = createToken(user);
     return token;
   }

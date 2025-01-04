@@ -1,8 +1,12 @@
 const express = require("express");
-const { handleSignUp } = require("../controllers/loginController");
+const {
+  handleSignUp,
+  handleSignIn,
+  handleGetUserProfile,
+} = require("../controllers/loginController");
 const upload = require("../services/utilities");
-const { validateSignUp } = require("../utilities/validation");
-
+const { validateSignUp, validateSignIn } = require("../utilities/validation");
+const authUser = require("../middlewares/auth");
 const router = express.Router();
 
 router.post(
@@ -14,5 +18,9 @@ router.post(
   validateSignUp,
   handleSignUp
 );
+
+router.post("/login", validateSignIn, handleSignIn);
+
+router.get("/my-profile", authUser, handleGetUserProfile);
 
 module.exports = router;
