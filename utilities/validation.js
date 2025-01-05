@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
 
-const validateSignUp = [
+const validateUserSignUp = [
   body("fullName").notEmpty().withMessage("Full Name is required"),
   body("email")
     .isEmail()
@@ -16,7 +16,7 @@ const validateSignUp = [
     .withMessage("Gender must be Male or Female."),
 ];
 
-const validateSignIn = [
+const validateUserSignIn = [
   body("email")
     .isEmail()
     .withMessage("Please provide a valid email address.")
@@ -27,4 +27,34 @@ const validateSignIn = [
     .withMessage("Password must be alteast 8 chars"),
 ];
 
-module.exports = { validateSignUp, validateSignIn };
+const validateDriverSignUp = [
+  body("fullName").notEmpty().withMessage("Full Name is required"),
+  body("email").isEmail().withMessage("Please provide a valid email"),
+  body("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be atleast 8 chars"),
+  body("mobileNo").isMobilePhone().withMessage("Mobile No is not valid"),
+  body("gender")
+    .isIn(["Male", "Female"])
+    .withMessage("Gender must be Male or Female."),
+  body("vehicleNo").notEmpty().withMessage("Vehicle Number is required"),
+  body("chassisNo").notEmpty().withMessage("Chassis Number is required"),
+  body("registrationCertificateUrl")
+    .notEmpty()
+    .withMessage("Registration Certificate URL is required"),
+  body("licenseImageUrl")
+    .notEmpty()
+    .withMessage("License Image URL is required"),
+];
+
+const validateDriverSignIn = [
+  body("email").isEmail().withMessage("Please provide a valid email"),
+  body("password").notEmpty().withMessage("Password is required"),
+];
+
+module.exports = {
+  validateUserSignUp,
+  validateUserSignIn,
+  validateDriverSignUp,
+  validateDriverSignIn,
+};

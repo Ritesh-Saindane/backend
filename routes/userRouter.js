@@ -1,14 +1,17 @@
-const express = require("express");
+const { Router } = require("express");
 const {
   handleSignUp,
   handleSignIn,
   handleGetUserProfile,
   handleLogOutUser,
-} = require("../controllers/loginController");
+} = require("../controllers/userController");
 const upload = require("../services/utilities");
-const { validateSignUp, validateSignIn } = require("../utilities/validation");
+const {
+  validateUserSignUp,
+  validateUserSignIn,
+} = require("../utilities/validation");
 const authUser = require("../middlewares/auth");
-const router = express.Router();
+const router = Router();
 
 router.post(
   "/signup",
@@ -16,11 +19,11 @@ router.post(
     { name: "profileImageUrl", maxCount: 1 },
     { name: "idImageUrl", maxCount: 1 },
   ]),
-  validateSignUp,
+  validateUserSignIn,
   handleSignUp
 );
 
-router.post("/login", validateSignIn, handleSignIn);
+router.post("/login", validateUserSignUp, handleSignIn);
 
 router.get("/my-profile", authUser, handleGetUserProfile);
 
