@@ -10,7 +10,7 @@ const {
   validateUserSignUp,
   validateUserSignIn,
 } = require("../utilities/validation");
-const authUser = require("../middlewares/auth");
+const { authUser } = require("../middlewares/auth");
 const router = Router();
 
 router.post(
@@ -23,7 +23,7 @@ router.post(
   handleSignUp
 );
 
-router.post("/login", validateUserSignUp, handleSignIn);
+router.post("/login", validateUserSignIn, handleSignIn);
 
 router.get("/my-profile", authUser, handleGetUserProfile);
 

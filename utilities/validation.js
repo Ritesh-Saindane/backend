@@ -39,12 +39,6 @@ const validateDriverSignUp = [
     .withMessage("Gender must be Male or Female."),
   body("vehicleNo").notEmpty().withMessage("Vehicle Number is required"),
   body("chassisNo").notEmpty().withMessage("Chassis Number is required"),
-  body("registrationCertificateUrl")
-    .notEmpty()
-    .withMessage("Registration Certificate URL is required"),
-  body("licenseImageUrl")
-    .notEmpty()
-    .withMessage("License Image URL is required"),
 ];
 
 const validateDriverSignIn = [

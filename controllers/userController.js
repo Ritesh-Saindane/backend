@@ -73,6 +73,7 @@ const handleLogOutUser = async (req, res) => {
 
   return res.status(200).json({ msg: "success" });
 };
+
 module.exports = {
   handleSignUp,
   handleSignIn,

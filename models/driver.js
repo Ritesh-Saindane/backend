@@ -36,6 +36,15 @@ const driverSchema = new Schema(
         type: String,
       },
     },
+    socketId: {
+      type: String,
+      default: null,
+    },
+    status: {
+      type: String,
+      enum: ["online", "offline", "busy"],
+      default: "offline",
+    },
     details: {
       vehicleNo: { type: String, required: true },
       chassisNo: { type: String, required: true },
@@ -54,8 +63,15 @@ const driverSchema = new Schema(
       default: 0,
     },
     currentLocation: {
-      type: Number,
-      // required: true,
+      lat: {
+        type: Number,
+      },
+      len: {
+        type: Number,
+      },
+    },
+    salt: {
+      type: String,
     },
   },
   { timestamps: true }
@@ -117,6 +133,29 @@ driverSchema.static("addDriverAndGenerateToken", async function (driverData) {
     throw new Error(err.message);
   }
 });
+
+driverSchema.static(
+  "findDriverAndGenerateToken",
+  async function (email, password) {
+    const driver = await this.findOne({ email });
+    if (!driver) {
+      throw new Error("Driver not found , pls check email");
+    }
+
+    const originalHashedPassword = driver.password;
+    const salt = driver.salt;
+
+    const hashedGivenPassword = createHmac("sha256", salt)
+      .update(password)
+      .digest("hex");
+
+    if (originalHashedPassword !== hashedGivenPassword)
+      throw new Error("Wrong Password");
+
+    const token = createToken(driver);
+    return token;
+  }
+);
 
 const Driver = model("driver", driverSchema);
 

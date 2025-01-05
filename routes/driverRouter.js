@@ -1,15 +1,18 @@
 const { Router } = require("express");
 const {
   handleDriverSignup,
-  //   handleDriverLogIn,
-  //   handleGetDriverProfile,
+  handleDriverSignin,
+  handleDriverLogOut,
+  handleGetDriverProfile,
 } = require("../controllers/driverController");
 const router = Router();
+const { authDriver } = require("../middlewares/auth");
 const {
   validateDriverSignUp,
   validateDriverSignIn,
 } = require("../utilities/validation");
 const uploads = require("../services/utilities");
+const { body } = require("express-validator");
 
 router.post(
   "/signup",
@@ -35,7 +38,10 @@ router.post(
   handleDriverSignup
 );
 
-// router.get("/login", validateDriverSignIn, handleDriverLogIn);
-// router.get("/my-profile", handleGetDriverProfile);
+router.post("/login", validateDriverSignIn, handleDriverSignin);
+
+router.get("/logout", authDriver, handleDriverLogOut);
+
+router.get("/my-profile", authDriver, handleGetDriverProfile);
 
 module.exports = router;
