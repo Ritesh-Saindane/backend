@@ -36,7 +36,8 @@ app.set("views", path.resolve("./views"));
 // ^ Routes :
 app.use("/", userRouter);
 app.use("/driver", driverRouter);
-app.use("/test", (req, res) => res.render("singup"));
-app.use("/driver", (req, res) => res.render("driverSingup"));
+
+app.use("/test_user", (req, res) => res.render("singup"));
+app.use("/test_driver", (req, res) => res.render("driverSingup"));
 
 app.listen(PORT, () => console.log(`Server running on PORT ${PORT}`));
