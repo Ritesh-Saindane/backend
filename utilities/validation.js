@@ -46,9 +46,15 @@ const validateDriverSignIn = [
   body("password").notEmpty().withMessage("Password is required"),
 ];
 
+const validateRideCreation = [
+  body("pickup").notEmpty().withMessage("Source is required"),
+  body("destination").notEmpty().withMessage("Destination is required"),
+];
+
 module.exports = {
   validateUserSignUp,
   validateUserSignIn,
   validateDriverSignUp,
   validateDriverSignIn,
+  validateRideCreation,
 };
